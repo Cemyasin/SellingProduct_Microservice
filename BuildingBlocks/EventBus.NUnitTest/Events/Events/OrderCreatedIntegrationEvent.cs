@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EventBus.UnitTest.Events.Events
+namespace EventBus.NUnitTest.Events.Events
 {
 	public class OrderCreatedIntegrationEvent: IntegrationEvent
 	{

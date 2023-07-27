@@ -110,7 +110,7 @@ namespace EventBus.RabbitMQ
 
 			if (!SubsManager.HasSubscriptionForEvent(eventName))
 			{
-				if (persistentConnection.IsConnected)
+				if (!persistentConnection.IsConnected)
 				{
 					persistentConnection.TryConnect();
 				}

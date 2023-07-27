@@ -1,16 +1,15 @@
 using EventBus.Base;
 using EventBus.Base.Abstraction;
 using EventBus.Factory;
-using EventBus.UnitTest.Events.EventHandlers;
-using EventBus.UnitTest.Events.Events;
+using EventBus.NUnitTest.Events.EventHandlers;
+using EventBus.NUnitTest.Events.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RabbitMQ.Client;
+using NUnit.Framework;
+using System.Diagnostics;
 
-namespace EventBus.UnitTest
+namespace EventBus.NUnitTest
 {
-	[TestClass]
 	public class EventBusTests
 	{
 
@@ -23,17 +22,17 @@ namespace EventBus.UnitTest
 
 		}
 
-		[TestMethod]
+		[Test]
 		public void subscribe_event_on_rabbitmq_test()
 		{
 
 			services.AddSingleton<IEventBus>(sp =>
 			{
-				
+
 				return EventBusFactory.Create(GetRabbitMQConfig(), sp);
 			});
 
-
+			
 			var sp = services.BuildServiceProvider();
 
 			var eventBus = sp.GetRequiredService<IEventBus>();
@@ -43,12 +42,13 @@ namespace EventBus.UnitTest
 		}
 
 
+		[Test]
 		public void subscribe_event_on_azure_test()
 		{
 
 			services.AddSingleton<IEventBus>(sp =>
 			{
-				
+
 				return EventBusFactory.Create(GetAzureConfig(), sp);
 			});
 
@@ -61,6 +61,7 @@ namespace EventBus.UnitTest
 			eventBus.UnSubscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
 		}
 
+		[Test]
 		public void send_message_to_rabbitmq()
 		{
 			services.AddSingleton<IEventBus>(sp =>
@@ -76,9 +77,27 @@ namespace EventBus.UnitTest
 
 			eventBus.Publish(new OrderCreatedIntegrationEvent(1));
 		}
+
+		[Test]
+		public void send_message_to_azure()
+		{
+			services.AddSingleton<IEventBus>(sp =>
+			{
+
+				return EventBusFactory.Create(GetAzureConfig(), sp);
+			});
+
+
+			var sp = services.BuildServiceProvider();
+
+			var eventBus = sp.GetRequiredService<IEventBus>();
+
+			eventBus.Publish(new OrderCreatedIntegrationEvent(1));
+		}
+
 		private EventBusConfig GetAzureConfig()
 		{
-			return  new EventBusConfig()
+			return new EventBusConfig()
 			{
 				ConnectionRetrycount = 5,
 				SubscriberClientappName = "EventBus.UnitTest",
@@ -107,5 +126,6 @@ namespace EventBus.UnitTest
 				//}
 			};
 		}
-	} 
+
+	}
 }
