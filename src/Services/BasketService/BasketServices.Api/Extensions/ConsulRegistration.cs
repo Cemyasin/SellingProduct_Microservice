@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace IdentityService.Api.Extensions.Registration
+namespace BasketService.Api.Extensions
 {
 	public static class ConsulRegistration
 	{
@@ -17,8 +17,8 @@ namespace IdentityService.Api.Extensions.Registration
 		{
 			services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
 			{
-				var address = configuration["ConsulConfig:Address"];
-				consulConfig.Address = new Uri(address);
+				var address				= configuration["ConsulConfig:Address"];
+				consulConfig.Address	= new Uri(address);
 			}));
 
 			return services;
@@ -26,26 +26,26 @@ namespace IdentityService.Api.Extensions.Registration
 
 		public static IApplicationBuilder RegisterWithConsul(this IApplicationBuilder app, IHostApplicationLifetime lifetime)
 		{
-			var consulClient = app.ApplicationServices.GetRequiredService<IConsulClient>();
+			var consulClient	= app.ApplicationServices.GetRequiredService<IConsulClient>();
 
-			var loggingFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+			var loggingFactory	= app.ApplicationServices.GetRequiredService<ILoggerFactory>();
 
-			var logger = loggingFactory.CreateLogger<IApplicationBuilder>();
+			var logger			= loggingFactory.CreateLogger<IApplicationBuilder>();
 
 			//Get server IP address
 			FeatureCollection features = app.Properties["server.Features"] as FeatureCollection;
-			var addresses = features.Get<IServerAddressesFeature>();
-			var address = addresses.Addresses.First();
+			var addresses		= features.Get<IServerAddressesFeature>();
+			var address			= addresses.Addresses.First();
 
 			//Register service with consul
-			var uri = new Uri(address);
-			var registration = new AgentServiceRegistration()
+			var uri				= new Uri(address);
+			var registration	= new AgentServiceRegistration()
 			{
-				ID = $"IdentityService",
-				Name = "IdentityService",
-				Address = $"{uri.Host}",
-				Port = uri.Port,
-				Tags = new[] { "IdentityService", "Identity", "Token", "JWT" }
+				ID				= $"BasketService",
+				Name			= "BasketService",
+				Address			= $"{uri.Host}",
+				Port			= uri.Port,
+				Tags			= new[] { "BasketService", "Basket" }
 			};
 
 			logger.LogInformation("Registering with Consul");

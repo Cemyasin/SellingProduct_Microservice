@@ -29,7 +29,7 @@ namespace IdentityService.Api
 		public void ConfigureServices(IServiceCollection services)
 		{
 			
-			services.AddScoped<IIdentityService,IdentityService.Api.Application.Services.IdentityService>();
+			services.AddScoped<IIdentityService,Application.Services.IdentityService>();
 
 			services.AddControllers();
 			services.AddSwaggerGen(c =>

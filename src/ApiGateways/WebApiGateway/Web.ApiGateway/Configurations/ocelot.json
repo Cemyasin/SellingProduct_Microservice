@@ -15,10 +15,21 @@
       "ServiceName": "IdentityService",
       "DownstreamPathTemplate": "/api/auth",
       "DownstreamScheme": "http",
-      
+
 
       "UpstreamPathTemplate": "/auth",
       "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamSheme": "http"
+    },
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "BasketService",
+      "DownstreamPathTemplate": "/api/Basket/{everything}",
+      "DownstreamScheme": "http",
+
+
+      "UpstreamPathTemplate": "/basket/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Put" ],
       "UpstreamSheme": "http"
     }
   ],
