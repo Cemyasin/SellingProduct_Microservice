@@ -10,4 +10,8 @@
 	  <PackageReference Include="Ocelot.Provider.Consul" Version="17.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Clients\BlazorWebApp\WebApp\WebApp.csproj" />
+  </ItemGroup>
+
 </Project>

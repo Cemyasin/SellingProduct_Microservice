@@ -31,7 +31,7 @@ namespace CatalogService.Api.Infrastructure.Context
 			var picturePath = "Pics";
 
 			await policy.ExecuteAsync(() => ProcessSeeding(context, setupDirPath, picturePath, logger));
-		}
+		 }
 
 		private async Task ProcessSeeding(CatalogContext context, string setupDirPath, string picturePath, ILogger logger)  
 		{
@@ -54,7 +54,7 @@ namespace CatalogService.Api.Infrastructure.Context
 
 				GetCatalogItemPictures(setupDirPath, picturePath);
 			}
-		}
+        }
 
 		private IEnumerable<CatalogType> GetCatalogTypesFromFile(string contentpath) 
 		{

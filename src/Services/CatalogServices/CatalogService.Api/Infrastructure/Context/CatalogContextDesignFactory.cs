@@ -8,7 +8,7 @@ namespace CatalogService.Api.Infrastructure.Context
 		public CatalogContext CreateDbContext(string[] args)
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>()
-				.UseSqlServer("Data Source=c_sqlserver;Initial Catalog=catalog;Persist Security Info=True;User ID=sa;Password=Salih123!");
+				.UseSqlServer("Data Source=ASUSX550V\\SQLEXPRESS;Initial Catalog=catalog;Persist Security Info =True;Trusted_Connection=True;TrustServerCertificate=True;");
 
 			return new CatalogContext(optionsBuilder.Options);
 		}

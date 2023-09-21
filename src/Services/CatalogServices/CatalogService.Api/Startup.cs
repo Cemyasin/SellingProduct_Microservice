@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CatalogService.Api.Extensions;
 using CatalogService.Api.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 
 namespace CatalogService.Api
 {
@@ -52,6 +53,12 @@ namespace CatalogService.Api
 			}
 
 			app.UseHttpsRedirection();
+
+			app.UseStaticFiles( new StaticFileOptions()
+			{
+				FileProvider = new PhysicalFileProvider(System.IO.Path.Combine(env.ContentRootPath, "Pics")),
+				RequestPath = "/pics"
+			});
 
 			app.UseRouting();
 

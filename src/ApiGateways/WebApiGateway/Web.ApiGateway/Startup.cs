@@ -1,5 +1,7 @@
+using Consul;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.ApiGateway.Infrastructure;
+using Web.ApiGateway.Services;
+using Web.ApiGateway.Services.Interfaces;
+using WebApp.Infrastructure;
 
 namespace Web.ApiGateway
 {
@@ -36,6 +42,19 @@ namespace Web.ApiGateway
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.ApiGateway", Version = "v1" });
 			});
+
+			services.AddScoped<ICatalogService, Services.CatalogService>();
+            services.AddScoped<IBasketService, BasketService>();
+            services.AddCors(options =>
+			{
+				options.AddPolicy("CorsPolicy",
+					builder => builder.SetIsOriginAllowed( (host) => true)
+					.AllowAnyMethod()
+					.AllowAnyHeader()
+					.AllowCredentials() );
+			});
+
+			ConfigureHttpClient(services);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +69,9 @@ namespace Web.ApiGateway
 
 			app.UseHttpsRedirection();
 
+
 			app.UseRouting();
+			app.UseCors("CorsPolicy");
 
 			app.UseAuthorization();
 
@@ -61,5 +82,23 @@ namespace Web.ApiGateway
 
 			await app.UseOcelot();
 		}
+	
+		private void ConfigureHttpClient(IServiceCollection services)
+		{
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+			
+			services.AddHttpClient("basket", c =>
+            {
+				c.BaseAddress = new Uri(Configuration["urls:basket"]);
+			})
+			.AddHttpMessageHandler<HttpClientDelegatingHandler>();
+
+            services.AddHttpClient("catalog", c =>
+            {
+                c.BaseAddress = new Uri(Configuration["urls:catalog"]);
+            })
+            .AddHttpMessageHandler<HttpClientDelegatingHandler>();
+        }
 	}
 }

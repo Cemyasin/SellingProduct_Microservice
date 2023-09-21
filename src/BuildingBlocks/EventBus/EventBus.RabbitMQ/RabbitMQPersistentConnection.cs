@@ -1,4 +1,5 @@
 ﻿using Polly;
+using Polly.Retry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -41,7 +42,7 @@ namespace EventBus.RabbitMQ
 		{
 			lock(lock_object)
 			{
-				var policy = Policy.Handle<SocketException>()
+				RetryPolicy policy = Policy.Handle<SocketException>()
 					.Or<BrokerUnreachableException>()
 					.WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
 					{
